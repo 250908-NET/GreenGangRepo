@@ -5,18 +5,15 @@ A poppy blooms.
 Screens glow in the night,
 messages drift like soft rain,
 silence still feels loud.
-
 old pond
 frog leaps in
 water's sound
-
-
 haiku
 haiku
 haiku
-
-
-
+Goes out,
+comes back,
+the love life of a cat.
 
 
 

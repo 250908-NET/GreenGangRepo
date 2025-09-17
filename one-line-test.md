@@ -1,2 +1,2 @@
 "Hello world!"
-"Replace me!"
+"GIT IS SO FUN!"

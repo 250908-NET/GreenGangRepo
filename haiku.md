@@ -17,7 +17,7 @@ the love life of a cat.
 Starry expanse bright
 A silent choir of old light
 Night cradles our dreams
-
-
-
+Snowflakes softly land,  
+Winter’s hush embraces all,  
+Solitude dawns bright.
 "Goodbye world!!"

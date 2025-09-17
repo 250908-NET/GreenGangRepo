@@ -14,9 +14,9 @@ haiku
 Goes out,
 comes back,
 the love life of a cat.
-
-
-
+Starry expanse bright
+A silent choir of old light
+Night cradles our dreams
 
 
 

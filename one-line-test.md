@@ -1,2 +1,3 @@
 "Hello world!"
-What's up!
+"GIT IS SO FUN!"
+

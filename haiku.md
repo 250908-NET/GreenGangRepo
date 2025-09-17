@@ -6,7 +6,9 @@ Screens glow in the night,
 messages drift like soft rain,
 silence still feels loud.
 
-
+old pond
+frog leaps in
+water's sound
 
 
 

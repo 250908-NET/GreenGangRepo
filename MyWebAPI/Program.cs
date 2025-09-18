@@ -329,7 +329,13 @@ app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", (double temp1, strin
 - Add `/password/strength/{password}` - rates password strength
 */
 
-
+/*
+## Challenge 11: Simple Games
+- Create `/game/guess-number` (POST) - number guessing game with session
+- Add `/game/rock-paper-scissors/{choice}` - play against computer
+- Create `/game/dice/{sides}/{count}` - roll N dice with X sides
+- Add `/game/coin-flip/{count}` - flip coins and return results
+*/
 
 
 app.Run();

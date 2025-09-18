@@ -1,0 +1,37 @@
+## Visual Studio-related files
+.vs/
+*.suo
+*.user
+*.bak
+*.cache
+*.ncb
+*.scc
+*.vssscc
+*.vspscc
+
+## Build output and temporary files
+[Bb]in/
+[Oo]bj/
+*.pdb
+*.log
+*.tmp
+*.temp
+
+## NuGet and package directories
+packages/
+*.nupkg
+.nuget/
+.local/
+.vs/
+.vs-code/
+
+## ReSharper and other extensions
+_ReSharper*/
+[Tt]est[Rr]esults/
+[Cc]overage.cobertura.xml
+
+## Local configuration files
+appsettings.Development.json
+appsettings.local.json
+*.runtimeconfig.json
+*.deps.json

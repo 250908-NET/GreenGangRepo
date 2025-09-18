@@ -1,4 +1,9 @@
+
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.RegularExpressions;
+using MyWebAPI.Helpers;
+using MyWebAPI.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -412,6 +417,42 @@ app.MapGet("/password/strength/{password}", (string password) =>
 
 });
 
+// --- Challenge 8: Simple Validator Endpoints ---
+var validatorGroup = app.MapGroup("/validate");
+
+// Basic email validation using a regular expression.
+validatorGroup.MapGet("/email/{email}", (string email) =>
+{
+    var regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+    bool isValid = regex.IsMatch(email);
+    return Results.Ok(new { Email = email, IsValid = isValid });
+}).WithTags("Validator");
+
+// Phone number validation using a regular expression for a common format.
+validatorGroup.MapGet("/phone/{phone}", (string phone) =>
+{
+    // Regex for a common North American format like (###) ###-####
+    var regex = new Regex(@"^(\+\d{1,2}\s?)?1?\-?\s*\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$");
+    bool isValid = regex.IsMatch(phone);
+    return Results.Ok(new { Phone = phone, IsValid = isValid });
+}).WithTags("Validator");
+
+// Credit card number validation using the Luhn algorithm.
+validatorGroup.MapGet("/creditcard/{number}", (string number) =>
+{
+    bool isValid = Luhn.Validate(number);
+    return Results.Ok(new { CreditCardNumber = number, IsValid = isValid });
+}).WithTags("Validator");
+
+// Strong password validation based on a set of rules.
+validatorGroup.MapGet("/strongpassword/{password}", (string password) =>
+{
+    var validationResult = new PasswordValidator(password).Validate();
+    return Results.Ok(new {
+        IsStrong = validationResult.IsValid,
+        ValidationRules = validationResult.Rules
+    });
+}).WithTags("Validator");
 
 app.Run();
 

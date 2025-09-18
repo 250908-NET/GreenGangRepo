@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Khoa\\Revature\\GreenGang\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj": {}
+    "C:\\Users\\muhiddin\\Desktop\\Revature\\GroupProject\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Khoa\\Revature\\GreenGang\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj": {
+    "C:\\Users\\muhiddin\\Desktop\\Revature\\GroupProject\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Khoa\\Revature\\GreenGang\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj",
+        "projectUniqueName": "C:\\Users\\muhiddin\\Desktop\\Revature\\GroupProject\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj",
         "projectName": "MyWebAPI",
-        "projectPath": "C:\\Users\\Khoa\\Revature\\GreenGang\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj",
-        "packagesPath": "C:\\Users\\Khoa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Khoa\\Revature\\GreenGang\\GreenGangRepo\\MyWebAPI\\obj\\",
+        "projectPath": "C:\\Users\\muhiddin\\Desktop\\Revature\\GroupProject\\GreenGangRepo\\MyWebAPI\\MyWebAPI.csproj",
+        "packagesPath": "C:\\Users\\muhiddin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\muhiddin\\Desktop\\Revature\\GroupProject\\GreenGangRepo\\MyWebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Khoa\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\muhiddin\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"

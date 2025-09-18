@@ -208,6 +208,129 @@ app.MapGet("/date/weekday/{date}", (string date) =>
     return Results.BadRequest(new { error = "Wrong date format" });
 });
 
+/*
+## Challenge 5: Simple Collections
+**Goal**: Practice working with lists and basic LINQ
+- Create `/colors` endpoint that returns a predefined list of favorite colors
+- Add `/colors/random` - returns a random color from the list
+- Create `/colors/search/{letter}` - returns colors starting with that letter
+- Add `/colors/add/{color}` (POST) - adds new color to the list
+*/
+
+var colors = new List<string> { "Red", "Green", "Blue", "Yellow", "Purple", "Orange" };
+
+app.MapGet("/colors", () =>
+{
+    return Results.Ok(new { colors });
+});
+
+app.MapGet("/colors/random", () =>
+{
+    string randomColor = colors[new Random().Next(colors.Count)];
+    return Results.Ok(new { color = randomColor });
+});
+
+app.MapGet("/colors/search/{letter}", (char letter) =>
+{
+    var found = new List<string>();
+    for (int i = 0; i < colors.Count; i++)
+    {
+        if (colors[i][0] == char.ToUpper(letter))
+        {
+            found.Add(colors[i]);
+        }
+    }
+    return Results.Ok(new { colors = found });
+   
+});
+
+app.MapPost("/colors/add/{color}", (string color) =>
+{
+    if (!colors.Contains(char.ToUpper(color[0]) + color.Substring(1).ToLower()))
+    {
+        colors.Add(char.ToUpper(color[0]) + color.Substring(1).ToLower());
+    }
+
+    return Results.Ok(new { colors });
+});
+
+/*
+## Challenge 6: Temperature Converter
+**Goal**: Practice calculations and different data formats
+- Create `/temp/celsius-to-fahrenheit/{temp}` 
+- Add `/temp/fahrenheit-to-celsius/{temp}`
+- Create `/temp/kelvin-to-celsius/{temp}` and reverse
+- Add `/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}` - compares temperatures
+*/
+
+app.MapGet("/temp/celsius-to-fahrenheit/{temp}", (double temp) =>
+{
+    double fahrenheit = (temp * 9 / 5) + 32;
+    return Results.Ok(new { celsius = temp, fahrenheit = fahrenheit });
+
+});
+
+app.MapGet("/temp/fahrenheit-to-celsius/{temp}", (double temp) =>
+{
+    double celsius = (temp - 32) * 5 / 9;
+    return Results.Ok(new { fahrenheit = temp, celsius = celsius });
+
+});
+
+app.MapGet("/temp/kelvin-to-celsius/{temp}", (double temp) =>
+{
+    double celsius = temp - 273.15;
+    return Results.Ok(new { kelvin = temp, celsius = celsius });
+
+});
+
+app.MapGet("/temp/celsius-to-kelvin/{temp}", (double temp) =>
+{
+    double kelvin = temp + 273.15;
+    return Results.Ok(new { celsius = temp, kelvin = kelvin });
+
+});
+
+app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", (double temp1, string unit1, double temp2, string unit2) =>
+{
+    double celsius1 = unit1.ToLower() switch
+    {
+        "celsius" => temp1,
+        "fahrenheit" => (temp1 - 32) * 5 / 9,
+        "kelvin" => temp1 - 273.15,
+        _ => throw new ArgumentException("Invalid unit1")
+    };
+
+    double celsius2 = unit2.ToLower() switch
+    {
+        "celsius" => temp2,
+        "fahrenheit" => (temp2 - 32) * 5 / 9,
+        "kelvin" => temp2 - 273.15,
+        _ => throw new ArgumentException("Invalid unit2")
+    };
+
+    string comparison = celsius1 switch
+    {
+        _ when celsius1 < celsius2 => "less than",
+        _ when celsius1 > celsius2 => "greater than",
+        _ => "equal to"
+    };
+
+    return Results.Ok(new { temp1, unit1, temp2, unit2, comparison });
+
+});
+
+/*
+## Challenge 7: Password Generator
+**Goal**: Work with random generation and string building
+- Create `/password/simple/{length}` - generates random letters/numbers
+- Add `/password/complex/{length}` - includes special characters
+- Create `/password/memorable/{words}` - generates passphrase with N words
+- Add `/password/strength/{password}` - rates password strength
+*/
+
+
+
 
 app.Run();
 

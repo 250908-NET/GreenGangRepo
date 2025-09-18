@@ -329,13 +329,85 @@ app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", (double temp1, strin
 - Add `/password/strength/{password}` - rates password strength
 */
 
-/*
-## Challenge 11: Simple Games
-- Create `/game/guess-number` (POST) - number guessing game with session
-- Add `/game/rock-paper-scissors/{choice}` - play against computer
-- Create `/game/dice/{sides}/{count}` - roll N dice with X sides
-- Add `/game/coin-flip/{count}` - flip coins and return results
-*/
+app.MapGet("/password/simple/{length}", (int length) =>
+{
+    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var random = new Random();
+    if (length < 8 || length > 128)
+    {
+        return Results.BadRequest(new { error = "Password length must be between 8 and 128 characters." });
+    }
+    var password = new string(Enumerable.Repeat(chars, length)
+        .Select(s => s[random.Next(s.Length)]).ToArray());
+    return Results.Ok(new { password });
+
+});
+
+app.MapGet("/password/complex/{length}", (int length) =>
+{
+    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
+    var random = new Random();
+    if (length < 8 || length > 128)
+    {
+        return Results.BadRequest(new { error = "Password length must be between 8 and 128 characters." });
+    }
+    var password = new string(Enumerable.Repeat(chars, length)
+        .Select(s => s[random.Next(s.Length)]).ToArray());
+    return Results.Ok(new { password });
+
+});
+
+app.MapGet("/password/memorable/{words}", (string words) =>
+{
+    var wordList = new List<string> { "apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew" };
+    var random = new Random();
+    var selectedWords = new List<string>();
+
+    var wordsArray = words.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    if (wordsArray.Length < 3 || wordsArray.Length > 10)
+    {
+        return Results.BadRequest(new { error = "Number of words must be between 3 and 10." });
+    }
+
+    foreach (var word in wordsArray)
+    {
+        if (wordList.Contains(word.ToLower()))
+        {
+            selectedWords.Add(word);
+        }
+        else
+        {
+            return Results.BadRequest(new { error = $"Word '{word}' is not in the word list." });
+        }
+    }
+
+    var passphrase = string.Join("-", selectedWords);
+    return Results.Ok(new { passphrase });
+
+});
+
+app.MapGet("/password/strength/{password}", (string password) =>
+{
+    int score = 0;
+
+    if (password.Length >= 8) score++;
+    if (password.Any(char.IsLower)) score++;
+    if (password.Any(char.IsUpper)) score++;
+    if (password.Any(char.IsDigit)) score++;
+    if (password.Any(ch => "!@#$%^&*()_+[]{}|;:,.<>?".Contains(ch))) score++;
+
+    string strength = score switch
+    {
+        5 => "Very Strong",
+        4 => "Strong",
+        3 => "Medium",
+        2 => "Weak",
+        _ => "Very Weak"
+    };
+
+    return Results.Ok(new { password, strength, score });   
+
+});
 
 
 app.Run();

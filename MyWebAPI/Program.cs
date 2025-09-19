@@ -520,6 +520,109 @@ app.MapGet("/convert/list-units/{type}", (string type) =>
     return Results.Ok(new { type, units });
 }).WithTags("Converter");
 
+/*
+Challenge 11: Simple Games
+**Goal**: Combine multiple concepts in mini-games
+- Create `/game/guess-number` (POST) - number guessing game with session
+- Add `/game/rock-paper-scissors/{choice}` - play against computer
+- Create `/game/dice/{sides}/{count}` - roll N dice with X sides
+- Add `/game/coin-flip/{count}` - flip coins and return results
+*/
+
+Random random = new Random();
+int secretNumber = random.Next(1, 11); // 1–10
+int attempts = 0;
+
+app.MapPost("/game/guess-number/{guess}", (int guess) =>
+{
+    attempts++;
+
+    if (guess == secretNumber)
+    {
+        int totalAttempts = attempts;
+
+        // reset game
+        secretNumber = random.Next(1, 11);
+        attempts = 0;
+
+        return Results.Ok(new
+        {
+            message = $"You got the right number! The number was {guess}.",
+            totalAttempts
+        });
+    }
+    else if (guess < secretNumber)
+    {
+        return Results.Ok(new { message = "The number is higher.", attempts });
+    }
+    else
+    {
+        return Results.Ok(new { message = "The number is lower.", attempts });
+    }
+});
+
+// Rock, Paper, Scissors
+app.MapGet("/game/rock-paper-scissors/{choice}", (string choice) =>
+{
+    string[] options = new[] { "rock", "paper", "scissors" };
+    string computerChoice = options[random.Next(options.Length)];
+
+    string outcome;
+    string choiceLower = choice.ToLower();
+
+    // Tie outcome
+    if (choiceLower == computerChoice)
+    {
+        outcome = $"It was a draw... The computer chose {computerChoice}.";
+    }
+
+    else if ((choiceLower == "rock" && computerChoice == "scissors") || (choiceLower == "paper" && computerChoice == "rock") || (choiceLower == "scissors" && computerChoice == "paper"))
+    {
+        outcome = $"You won! The computer chose {computerChoice}.";
+    }
+
+    else
+    {
+        outcome = $"You lost :( The computer chose {computerChoice}.";
+    }
+    return Results.Ok(new { yourChoice = choiceLower, computerChoice = computerChoice, message = outcome });
+
+});
+
+// Dice Roll
+app.MapGet("/game/dice/{sides}/{count}", (int sides, int count) =>
+{
+    if (sides < 1)
+    {
+        return Results.BadRequest(new { error = "A dice must have more than 0 sides" });
+    }
+
+    if (count < 1)
+    {
+        return Results.BadRequest(new { error = "You must roll at least one dice" });
+    }
+
+    var allRolls = new List<int>();
+    for (int i = 0; i < count; i++)
+        allRolls.Add(random.Next(1, sides + 1));
+
+    return Results.Ok(new { numSides = sides, numDies = count, rolls = allRolls });
+});
+
+// Coin Flip
+app.MapGet("/game/coin-flip/{count}", (int count) =>
+{
+    if (count < 1)
+        return Results.BadRequest(new { error = "You must flip at least one coin" });
+
+    var allFlips = new List<string>();
+    for (int i = 0; i < count; i++)
+    {
+        allFlips.Add(random.Next(2) == 0 ? "Heads" : "Tails");
+    }
+
+    return Results.Ok(new { count, allFlips });
+});
 
 app.Run();
 

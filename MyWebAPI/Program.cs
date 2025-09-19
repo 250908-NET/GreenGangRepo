@@ -454,5 +454,72 @@ validatorGroup.MapGet("/strongpassword/{password}", (string password) =>
     });
 }).WithTags("Validator");
 
+
+// Challenge 9: Unit Converter
+
+
+// Create /convert/length/{value}/{fromUnit}/{toUnit} (meters, feet, inches)
+app.MapGet("/convert/length/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit) =>
+{
+    try
+    {
+        double convertedValue = UnitConverter.ConvertLength(value, fromUnit, toUnit);
+        return Results.Ok(new { originalValue = value, fromUnit, toUnit, convertedValue });
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).WithTags("Converter");
+
+
+// Add /convert/weight/{value}/{fromUnit}/{toUnit} (kg, lbs, ounces)
+app.MapGet("/convert/weight/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit) =>
+{
+    try
+    {
+        double convertedValue = UnitConverter.ConvertWeight(value, fromUnit, toUnit);
+        return Results.Ok(new { originalValue = value, fromUnit, toUnit, convertedValue });
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).WithTags("Converter");
+
+// Create /convert/volume/{value}/{fromUnit}/{toUnit} (liters, gallons, cups)
+app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit) =>
+{
+    try
+    {
+        double convertedValue = UnitConverter.ConvertVolume(value, fromUnit, toUnit);
+        return Results.Ok(new { originalValue = value, fromUnit, toUnit, convertedValue });
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).WithTags("Converter");
+
+// Add /convert/list-units/{type} - returns available units for each type
+app.MapGet("/convert/list-units/{type}", (string type) =>
+{
+    var units = type.ToLower() switch
+    {
+        "length" => new List<string> { "meters", "feet", "inches" },
+        "weight" => new List<string> { "kg", "lbs", "ounces" },
+        "volume" => new List<string> { "liters", "gallons", "cups" },
+        _ => null
+    };
+
+    if (units == null)
+    {
+        return Results.BadRequest(new { error = "Invalid type. Valid types are length, weight, volume." });
+    }
+
+    return Results.Ok(new { type, units });
+}).WithTags("Converter");
+
+
 app.Run();
 

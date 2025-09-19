@@ -454,109 +454,72 @@ validatorGroup.MapGet("/strongpassword/{password}", (string password) =>
     });
 }).WithTags("Validator");
 
-/*
-Challenge 11: Simple Games
-**Goal**: Combine multiple concepts in mini-games
-- Create `/game/guess-number` (POST) - number guessing game with session
-- Add `/game/rock-paper-scissors/{choice}` - play against computer
-- Create `/game/dice/{sides}/{count}` - roll N dice with X sides
-- Add `/game/coin-flip/{count}` - flip coins and return results
-*/
 
-Random random = new Random();
-int secretNumber = random.Next(1, 11); // 1–10
-int attempts = 0;
+// Challenge 9: Unit Converter
 
-app.MapPost("/game/guess-number/{guess}", (int guess) =>
+
+// Create /convert/length/{value}/{fromUnit}/{toUnit} (meters, feet, inches)
+app.MapGet("/convert/length/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit) =>
 {
-    attempts++;
-
-    if (guess == secretNumber)
+    try
     {
-        int totalAttempts = attempts;
-
-        // reset game
-        secretNumber = random.Next(1, 11);
-        attempts = 0;
-
-        return Results.Ok(new
-        {
-            message = $"You got the right number! The number was {guess}.",
-            totalAttempts
-        });
+        double convertedValue = UnitConverter.ConvertLength(value, fromUnit, toUnit);
+        return Results.Ok(new { originalValue = value, fromUnit, toUnit, convertedValue });
     }
-    else if (guess < secretNumber)
+    catch (ArgumentException ex)
     {
-        return Results.Ok(new { message = "The number is higher.", attempts });
+        return Results.BadRequest(new { error = ex.Message });
     }
-    else
-    {
-        return Results.Ok(new { message = "The number is lower.", attempts });
-    }
-});
+}).WithTags("Converter");
 
-// Rock, Paper, Scissors
-app.MapGet("/game/rock-paper-scissors/{choice}", (string choice) =>
+
+// Add /convert/weight/{value}/{fromUnit}/{toUnit} (kg, lbs, ounces)
+app.MapGet("/convert/weight/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit) =>
 {
-    string[] options = new[] { "rock", "paper", "scissors" };
-    string computerChoice = options[random.Next(options.Length)];
-
-    string outcome;
-    string choiceLower = choice.ToLower();
-
-    // Tie outcome
-    if (choiceLower == computerChoice)
+    try
     {
-        outcome = $"It was a draw... The computer chose {computerChoice}.";
+        double convertedValue = UnitConverter.ConvertWeight(value, fromUnit, toUnit);
+        return Results.Ok(new { originalValue = value, fromUnit, toUnit, convertedValue });
     }
-
-    else if ((choiceLower == "rock" && computerChoice == "scissors") || (choiceLower == "paper" && computerChoice == "rock") || (choiceLower == "scissors" && computerChoice == "paper"))
+    catch (ArgumentException ex)
     {
-        outcome = $"You won! The computer chose {computerChoice}.";
+        return Results.BadRequest(new { error = ex.Message });
     }
+}).WithTags("Converter");
 
-    else
-    {
-        outcome = $"You lost :( The computer chose {computerChoice}.";
-    }
-    return Results.Ok(new { yourChoice = choiceLower, computerChoice = computerChoice, message = outcome });
-
-});
-
-// Dice Roll
-app.MapGet("/game/dice/{sides}/{count}", (int sides, int count) =>
+// Create /convert/volume/{value}/{fromUnit}/{toUnit} (liters, gallons, cups)
+app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit) =>
 {
-    if (sides < 1)
+    try
     {
-        return Results.BadRequest(new { error = "A dice must have more than 0 sides" });
+        double convertedValue = UnitConverter.ConvertVolume(value, fromUnit, toUnit);
+        return Results.Ok(new { originalValue = value, fromUnit, toUnit, convertedValue });
     }
-
-    if (count < 1)
+    catch (ArgumentException ex)
     {
-        return Results.BadRequest(new { error = "You must roll at least one dice" });
+        return Results.BadRequest(new { error = ex.Message });
     }
+}).WithTags("Converter");
 
-    var allRolls = new List<int>();
-    for (int i = 0; i < count; i++)
-        allRolls.Add(random.Next(1, sides + 1));
-
-    return Results.Ok(new { numSides = sides, numDies = count, rolls = allRolls });
-});
-
-// Coin Flip
-app.MapGet("/game/coin-flip/{count}", (int count) =>
+// Add /convert/list-units/{type} - returns available units for each type
+app.MapGet("/convert/list-units/{type}", (string type) =>
 {
-    if (count < 1)
-        return Results.BadRequest(new { error = "You must flip at least one coin" });
-
-    var allFlips = new List<string>();
-    for (int i = 0; i < count; i++)
+    var units = type.ToLower() switch
     {
-        allFlips.Add(random.Next(2) == 0 ? "Heads" : "Tails");
+        "length" => new List<string> { "meters", "feet", "inches" },
+        "weight" => new List<string> { "kg", "lbs", "ounces" },
+        "volume" => new List<string> { "liters", "gallons", "cups" },
+        _ => null
+    };
+
+    if (units == null)
+    {
+        return Results.BadRequest(new { error = "Invalid type. Valid types are length, weight, volume." });
     }
 
-    return Results.Ok(new { count, allFlips });
-});
+    return Results.Ok(new { type, units });
+}).WithTags("Converter");
+
 
 app.Run();
 
